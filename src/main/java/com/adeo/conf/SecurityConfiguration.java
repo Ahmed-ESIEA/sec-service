@@ -33,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // disable Login form  use JWT http.formLogin();
         http.csrf().disable();
+        http.authorizeRequests().antMatchers("/login/**","/register/**").permitAll();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/appUsers/**", "/appRoles/**").hasAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
