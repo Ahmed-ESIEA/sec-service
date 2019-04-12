@@ -45,11 +45,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AppUser loadUserByUsername(String userName) {
-        return null;
+        return appUserRepository.findByUserName(userName);
     }
 
     @Override
     public void addRoleToUser(String userName, String roleName) {
-
+        AppUser appUser = appUserRepository.findByUserName(userName);
+        AppRole appRole = appRoleRepository.findByRoleName(roleName);
+        appUser.getRoles().add(appRole);
     }
 }
