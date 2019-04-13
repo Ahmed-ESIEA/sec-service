@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,13 +40,13 @@ public class JWTAuthentificationFilter extends UsernamePasswordAuthenticationFil
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         User user = (User) authResult.getPrincipal();
         List<String> roles = new ArrayList<>();
         authResult.getAuthorities().forEach(a -> roles.add(a.getAuthority()));
         String jwt = JWT.create().withIssuer(request.getRequestURI()).withSubject(user.getUsername()).
                 withArrayClaim("roles", roles.toArray(new String[roles.size()]))
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 3600)).sign(Algorithm.HMAC256("a.boucetta@hotmail.fr"));
-        response.addHeader("Authorization",jwt);
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityParams.EXPIRATION)).sign(Algorithm.HMAC256(SecurityParams.SECRET));
+        response.addHeader(SecurityParams.JWT_HEADER_NAME, jwt);
     }
 }

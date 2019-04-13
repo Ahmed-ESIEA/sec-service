@@ -3,7 +3,6 @@ package com.adeo.web;
 import com.adeo.entities.AppUser;
 import com.adeo.service.AccountService;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
