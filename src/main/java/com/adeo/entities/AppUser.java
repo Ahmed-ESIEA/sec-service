@@ -1,5 +1,6 @@
 package com.adeo.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class AppUser {
     private Long id;
     @Column(unique = true)
     private String userName;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean actived;
     @ManyToMany(fetch = FetchType.EAGER)
