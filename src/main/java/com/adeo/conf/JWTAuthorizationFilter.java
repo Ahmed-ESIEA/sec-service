@@ -21,16 +21,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JWTAuthorisationFilter extends OncePerRequestFilter {
-    private static final Logger LOGGER = LogManager.getLogger(JWTAuthorisationFilter.class);
+public class JWTAuthorizationFilter extends OncePerRequestFilter {
+    private static final Logger LOGGER = LogManager.getLogger(JWTAuthorizationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-        LOGGER.info("***********");
+        httpServletResponse.addHeader("Allow-Control-Allow-Origin","*");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
+        httpServletResponse.addHeader("Access-Control-Expose-Headers","Allow-Control-Allow-Origin,Allow-Control-Allow-Credentials,Authorization");
+        if(httpServletRequest.getRequestURI().equals("/login")){
+            filterChain.doFilter(httpServletRequest,httpServletResponse);
+            return;
+        }
         String jwt = httpServletRequest.getHeader(SecurityParams.JWT_HEADER_NAME);
         if (jwt == null || !jwt.startsWith(SecurityParams.HEADER_PREFIX)) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
+            if(LOGGER.isDebugEnabled()) LOGGER.debug("Token is Null or header not start with "+SecurityParams.HEADER_PREFIX);
             return;
         }
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SecurityParams.SECRET)).build();
