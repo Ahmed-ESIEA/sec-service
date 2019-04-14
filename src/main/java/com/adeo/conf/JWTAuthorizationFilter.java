@@ -25,18 +25,19 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LogManager.getLogger(JWTAuthorizationFilter.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        httpServletResponse.addHeader("Allow-Control-Allow-Origin","*");
-        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
-        httpServletResponse.addHeader("Access-Control-Expose-Headers","Allow-Control-Allow-Origin,Allow-Control-Allow-Credentials,Authorization");
-        if(httpServletRequest.getRequestURI().equals("/login")){
-            filterChain.doFilter(httpServletRequest,httpServletResponse);
+        response.addHeader("Allow-Control-Allow-Origin","*");
+        response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
+        response.addHeader("Access-Control-Expose-Headers","Allow-Control-Allow-Origin,Allow-Control-Allow-Credentials,Authorization");
+        response.addHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,Patch");
+        if(request.getRequestURI().equals("/login")){
+            filterChain.doFilter(request,response);
             return;
         }
-        String jwt = httpServletRequest.getHeader(SecurityParams.JWT_HEADER_NAME);
+        String jwt = request.getHeader(SecurityParams.JWT_HEADER_NAME);
         if (jwt == null || !jwt.startsWith(SecurityParams.HEADER_PREFIX)) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            filterChain.doFilter(request, response);
             if(LOGGER.isDebugEnabled()) LOGGER.debug("Token is Null or header not start with "+SecurityParams.HEADER_PREFIX);
             return;
         }
@@ -48,7 +49,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         roles.forEach(s -> grantedAuthorities.add(new SimpleGrantedAuthority(s)));
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userName, null, grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(request, response);
 
     }
 }
