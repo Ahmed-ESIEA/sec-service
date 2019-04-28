@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String s) {
         AppUser appUser = accountService.loadUserByUsername(s);
         if (appUser == null) throw new UsernameNotFoundException("Invalid User");
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
