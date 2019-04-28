@@ -1,8 +1,11 @@
 package com.adeo.conf;
 
-public interface SecurityParams {
-    String JWT_HEADER_NAME = "Authorization";
-    String SECRET = "a.boucetta@hotmail.fr";
-    long EXPIRATION = 10*24*3600*1000;
-    String HEADER_PREFIX = "Bearer ";
+abstract class SecurityParams {
+    static final String JWT_HEADER_NAME = "Authorization";
+    static final String SECRET = "a.boucetta@hotmail.fr";
+    static final long EXPIRATION = 864000000;
+    static final String HEADER_PREFIX = "Bearer ";
+
+    private SecurityParams() {
+    }
 }

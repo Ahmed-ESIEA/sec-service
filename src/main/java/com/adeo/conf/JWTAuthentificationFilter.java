@@ -1,6 +1,7 @@
 package com.adeo.conf;
 
 import com.adeo.entities.AppUser;
+import com.adeo.exception.TechnicalException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,12 +32,14 @@ public class JWTAuthentificationFilter extends UsernamePasswordAuthenticationFil
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         AppUser appUser;
+        Authentication authentication;
         try {
             appUser = new ObjectMapper().readValue(request.getInputStream(), AppUser.class);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUserName(), appUser.getPassword()));
+            authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUserName(), appUser.getPassword()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw  new TechnicalException(e);
         }
+        return  authentication;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.adeo.dao.AppRoleRepository;
 import com.adeo.dao.AppUserRepository;
 import com.adeo.entities.AppRole;
 import com.adeo.entities.AppUser;
+import com.adeo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AppUser saveUser(String username, String password, String confirmed) {
         AppUser appUser = appUserRepository.findByUserName(username);
-        if (appUser != null) throw new RuntimeException("User already exist");
-        if (!password.equals(confirmed)) throw new RuntimeException("Please Confirm your Password");
+        if (appUser != null) throw new BusinessException("User already exist");
+        if (!password.equals(confirmed)) throw new BusinessException("Please Confirm your Password");
         AppUser user = new AppUser();
         user.setActived(true);
         user.setUserName(username);
